@@ -1,6 +1,12 @@
-# Ignite - FX Trading Platform
-## Trading dashboard for FX pairs
-- This is react based responsive dashboard for FX trading
+# Ignite - FX Trading platform
+## Trading dashboard for FX pairs using WebSockets
+
+#### Live demo - https://iamksuresh.github.io/trading_platform/
+#### readme - https://github.com/iamksuresh/trading_platform
+
+#### screenshots
+-   Desktop - https://github.com/iamksuresh/trading_platform/blob/master/screenshots/desktop.png
+-   Tablet - https://github.com/iamksuresh/trading_platform/blob/master/screenshots/tablet.png
 
 ## Features
 - React based responsive web application 
@@ -20,6 +26,7 @@
 
 ## Installation
 -  Pre-requisite - [Node.js](https://nodejs.org/) latest. 
+-  git clone https://github.com/iamksuresh/trading_platform.git
 -  Tested in node 16.15.0 , npm 8.9.0 , chrome browser
 
 ```sh
@@ -34,3 +41,4 @@ npm start
 - Testing strategy is implemented but few cases are to be covered.
 - Pure JS WebSocket API is used to implement websocket calls
 - UI is demo only and further improvements are advised.
+
