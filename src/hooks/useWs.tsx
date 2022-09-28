@@ -22,16 +22,12 @@ export const useWs = (
 
   const transformSocketMsg = ({ data }: { data: any }) => {
     const parsedData = JSON.parse(data);
-    // const saveAsksUntilThrottle: any = {};
     if (Object.keys(parsedData) && parsedData.table) {
       const { asks, bids, instrumentId, timestamp } = parsedData?.data[0];
       const receivedTimeStamp = parseInt(timestamp, 10);
 
       if (!saveDataUntilThrottle[instrumentId]) {
-        saveDataUntilThrottle[instrumentId] = {
-          ask: [],
-          bid: [],
-        };
+        initSocketData(instrumentId);       
       }
       saveDataUntilThrottle[instrumentId]['ask'].push(...getAskPrice(asks));
       saveDataUntilThrottle[instrumentId]['bid'].push(...getBidPrice(bids));
@@ -39,7 +35,7 @@ export const useWs = (
       if (!throttleTime[instrumentId] || throttleTime[instrumentId] < receivedTimeStamp) {
         setThrottleTime({ [instrumentId]: receivedTimeStamp + ThrottleSocketUpdate });
         updateOrderBook(instrumentId, timestamp);
-        saveDataUntilThrottle[instrumentId] = {};
+        initSocketData(instrumentId);
       }
     }
   };
@@ -60,6 +56,13 @@ export const useWs = (
       acc.push(curr[0]);
       return acc;
     }, []);
+
+  const initSocketData = (instrumentId: string) => {
+    saveDataUntilThrottle[instrumentId] = {
+      ask: [],
+      bid: [],
+    };
+  };
 
   const getAskPrice = (asks: number[][]) =>
     // business logic for best ask price
