@@ -31,10 +31,12 @@ export const WebsocketContext = createContext<any>({});
 const WsContextProvider: React.FC<Props> = ({ children }) => {
   const socket = useRef<any>(null);
   const [isReady, setIsReady] = useState(false);
+  const saveDataUntilThrottle: any = {};
 
   // read data from env variables
   const { FXPairs, ThrottleLimit } = useEnv();
 
+  // states
   const [orderBookData, setOrderBookData] = useReducer(
     (state: IOrderBookData | {}, newState: Partial<IOrderBookData>) => {
       const newVal = Object.assign({}, state, newState);
@@ -42,9 +44,7 @@ const WsContextProvider: React.FC<Props> = ({ children }) => {
     },
     {},
   );
-
   const [instrumentArgs, setInstrumentArgs] = useState<any>([]);
-
   const [throttleTime, setThrottleTime] = useReducer(
     (state: IThrottle | {}, newState: IThrottle) => {
       return Object.assign(state, newState);
@@ -52,6 +52,7 @@ const WsContextProvider: React.FC<Props> = ({ children }) => {
     {},
   );
 
+  // use effects
   useEffect(() => {
     connect();
     return () => {
@@ -97,7 +98,14 @@ const WsContextProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
-  useWs(socket.current, throttleTime, setThrottleTime, setOrderBookData, ThrottleLimit);
+  useWs(
+    socket.current,
+    throttleTime,
+    setThrottleTime,
+    setOrderBookData,
+    ThrottleLimit,
+    saveDataUntilThrottle,
+  );
 
   useEffect(() => {
     if (instrumentArgs.length) {

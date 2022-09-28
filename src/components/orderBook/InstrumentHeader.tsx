@@ -16,7 +16,7 @@ const InstrumentHeader: React.FC<IProps> = (props) => {
         display: 'flex',
       }}
     >
-      <u>{from} </u>
+      <u style={{marginRight : '2px'}}>{from} </u>
       {to}
     </h3>
   );

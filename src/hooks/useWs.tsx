@@ -14,6 +14,7 @@ export const useWs = (
   setThrottleTime: any,
   setOrderBookData: any,
   ThrottleSocketUpdate: number,
+  saveDataUntilThrottle: any,
 ) => {
   if (websocket) {
     websocket.onmessage = ({ data }: any) => transformSocketMsg({ data });
@@ -21,40 +22,49 @@ export const useWs = (
 
   const transformSocketMsg = ({ data }: { data: any }) => {
     const parsedData = JSON.parse(data);
+    // const saveAsksUntilThrottle: any = {};
     if (Object.keys(parsedData) && parsedData.table) {
       const { asks, bids, instrumentId, timestamp } = parsedData?.data[0];
       const receivedTimeStamp = parseInt(timestamp, 10);
 
+      if (!saveDataUntilThrottle[instrumentId]) {
+        saveDataUntilThrottle[instrumentId] = {
+          ask: [],
+          bid: [],
+        };
+      }
+      saveDataUntilThrottle[instrumentId]['ask'].push(...getAskPrice(asks));
+      saveDataUntilThrottle[instrumentId]['bid'].push(...getBidPrice(bids));
+
       if (!throttleTime[instrumentId] || throttleTime[instrumentId] < receivedTimeStamp) {
         setThrottleTime({ [instrumentId]: receivedTimeStamp + ThrottleSocketUpdate });
-
-        setOrderBookData({
-          [instrumentId.toLowerCase()]: {
-            ask: bestAskPrice(asks),
-            bid: bestBidPrice(bids),
-            timestamp,
-            instrumentId,
-          },
-        });
+        updateOrderBook(instrumentId, timestamp);
+        saveDataUntilThrottle[instrumentId] = {};
       }
     }
   };
 
-  const bestBidPrice = (bids: number[][]) => {
+  const updateOrderBook = (instrumentId: string, timestamp: string) => {
+    setOrderBookData({
+      [instrumentId.toLowerCase()]: {
+        ask: toFloat(Math.max(...saveDataUntilThrottle[instrumentId].ask), 3),
+        bid: toFloat(Math.max(...saveDataUntilThrottle[instrumentId].bid), 3), //bestBidPrice(bids),
+        timestamp,
+        instrumentId,
+      },
+    });
+  };
+  const getBidPrice = (bids: number[][]) =>
     // business logic for best bid price
-    const lowestBid = bids.reduce((acc: any, curr: any): number[] => {
+    bids.reduce((acc: any, curr: any): number[] => {
       acc.push(curr[0]);
       return acc;
     }, []);
-    return toFloat(Math.max(...lowestBid), 3);
-  };
 
-  const bestAskPrice = (asks: number[][]) => {
+  const getAskPrice = (asks: number[][]) =>
     // business logic for best ask price
-    const lowestAsk = asks.reduce((acc: any, curr: any): number[] => {
+    asks.reduce((acc: any, curr: any): number[] => {
       acc.push(curr[0]);
       return acc;
     }, []);
-    return toFloat(Math.max(...lowestAsk), 3);
-  };
 };

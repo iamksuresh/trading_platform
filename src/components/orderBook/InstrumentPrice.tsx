@@ -7,6 +7,7 @@ import { Button, ButtonGroup, Paper } from '@mui/material';
 
 import { useEffect, useReducer } from 'react';
 import styled from 'styled-components';
+import { CommonEnum } from '../../enum/CommonEnum';
 import { IInstrumentData } from '../../types';
 import { toFloat } from '../../utils';
 
@@ -57,6 +58,11 @@ const StyledBtnGrp = styled(ButtonGroup)`
   width: 100%;
 `;
 
+const StyledSpan = styled.span`
+  border: 1px solid #005ce6;
+  padding: 2px;
+`;
+
 interface IProps {
   insDetail: IInstrumentData | {};
 }
@@ -77,24 +83,45 @@ const InstrumentPrice: React.FC<IProps> = ({ insDetail }) => {
   }, [ask, bid]);
 
   return (
-    <StyledBtnGrp
-      id="instrumentPrice"
-      variant="contained"
-      aria-label="outlined primary button group"
-    >
-      <StyledBtn id="bidPanel">
-        <InstrumentLeft> {from} </InstrumentLeft>
-        {bidWholeNos}.<StyledDecimal>{bidFloatNos}</StyledDecimal>
-      </StyledBtn>
-
-      <StyledPaper square={true} elevation={3}>
-        {diffVal}
-      </StyledPaper>
-      <StyledBtn id="askPanel">
-        <InstrumentRight> {to} </InstrumentRight>
-        {askWholeNos}.<StyledDecimal>{askFloatNos}</StyledDecimal>
-      </StyledBtn>
-    </StyledBtnGrp>
+    <>
+      <StyledBtnGrp
+        id="instrumentPrice"
+        variant="contained"
+        aria-label="outlined primary button group"
+      >
+        <StyledBtn id="bidPanel">
+          <InstrumentLeft> {from} </InstrumentLeft>
+          {bidWholeNos}.<StyledDecimal>{bidFloatNos}</StyledDecimal>
+        </StyledBtn>
+        <StyledPaper square={true} elevation={3}>
+          {diffVal}
+        </StyledPaper>
+        <StyledBtn id="askPanel">
+          <InstrumentRight> {to} </InstrumentRight>
+          {askWholeNos}.<StyledDecimal>{askFloatNos}</StyledDecimal>
+        </StyledBtn>
+      </StyledBtnGrp>
+      <div
+        style={{
+          marginTop: '3px',
+        }}
+      >
+        <StyledSpan
+          style={{
+            float: 'left',
+          }}
+        >
+          {CommonEnum.BID}
+        </StyledSpan>
+        <StyledSpan
+          style={{
+            float: 'right',
+          }}
+        >
+          {CommonEnum.ASK}
+        </StyledSpan>
+      </div>
+    </>
   );
 };
 

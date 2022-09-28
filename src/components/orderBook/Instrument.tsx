@@ -17,6 +17,7 @@ const StyledContainer = styled(Container)`
   background: #1a1919;
   color: white;
   min-height: 170px;
+  overflow : auto;
 `;
 
 interface IProps {
