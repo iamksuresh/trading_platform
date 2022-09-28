@@ -36,8 +36,18 @@ npm start
 ```
 - UI will start at port 3000
 
+## Improvements
+- UI performance is greatly improved using throttling of FX data for configurable intervals.
+-- FX prices are collected until defined interval
+-- ASK - Lowest ASK value is updated in the UI dashboard
+-- BID - Highest BID value is updated in the UI dashboard
+- Handling of multiple instruments
+-- This is done at the store level using react Context API
+-- Clear separation of concers between subscribing and processing of incoming individual FX pairs data
+
 ## Good to know 
-- For the purpose of demo, coinflex websockets api are used.
+- For the purpose of demo, coinflex websockets api are used. 
+-- https://docs.coinflex.com/#websocket-api-subscriptions-public-orderbook-depth
 - Testing strategy is implemented but few cases are to be covered.
 - Pure JS WebSocket API is used to implement websocket calls
 - UI is demo only and further improvements are advised.
